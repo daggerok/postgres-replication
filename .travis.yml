@@ -1,0 +1,55 @@
+group: edge
+dist: trusty
+
+language: java
+jdk:
+ - oraclejdk8
+ - openjdk8
+
+env:
+  global:
+    TERM=dumb
+
+install: true
+before_install:
+  # helper wait_for function, usage: `wait_for 8080`
+  - >
+    function wait_for {
+      export port=$1
+      while [ "$(sudo lsof -t -i:${port} | wc -l)" == "0" ]; do sleep 1; done;
+    }
+  # helper stop_any function. usage: `stop_any 8080`
+  - >
+    function stop_any {
+      export port=$1
+      sudo kill $(sudo lsof -t -i:$port) | true
+    }
+
+  - sudo apt update
+
+  # install docker-compose
+  - sudo apt install -y python-pip curl jq libxml2-utils
+  - sudo pip install docker-compose httpie
+  - sudo usermod -aG docker $(whoami)
+
+  # kill ports to be used
+  - lsof -i tcp:27017 | awk 'NR!=1 {print $2}' | xargs kill | true
+  - stop_any 5432
+  - stop_any 8080
+
+script:
+  - bash gradlew bootRun &
+  - wait_for 8080
+  - http :8080/api
+  - http :8080/api/messages
+  - http :8080/api/messages | jq ._embedded.messages[0]
+  - http :8080/api/messages | jq ._embedded.messages[5]
+  - http :8080/api/messages | jq ._embedded.messages[4]
+
+after_script:
+  - http post :8080/admin/shutdown
+
+cache:
+  directories:
+    - $HOME/.m2/
+    - $HOME/.gradle/

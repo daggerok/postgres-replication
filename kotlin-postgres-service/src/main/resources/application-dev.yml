@@ -1,0 +1,14 @@
+spring:
+  jpa:
+    generate-ddl: true
+    hibernate:
+      ddl-auto: create-drop
+
+management:
+  context-path: /admin
+  security:
+    enabled: false
+
+endpoints:
+  shutdown:
+    enabled: true
