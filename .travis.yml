@@ -29,6 +29,18 @@ before_install:
   - stop_any 8080
 
 script:
+  - bash gradlew clean build
+
+  - docker system prune -af --volumes
+  - docker-compose -f docker-compose/docker-compose-all.yml up --force-recreate -d --build --remove-orphans
+  - docker-compose -f docker-compose/docker-compose-all.yml down -v
+
+  - docker system prune -af --volumes
+  - bash gradlew composeUp -Ddocker=all
+  - http :8080/
+  - bash gradlew composeDown -Ddocker=all
+
+  - docker system prune -af --volumes
   - bash gradlew bootRun &
   - wait_for 8080
   - http :8080/api

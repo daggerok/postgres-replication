@@ -1,15 +1,15 @@
 db:
   name: ${DB_NAME:db}
   user: ${DB_USER:user}
-  pass: ${DB_PASSWORD:password}
-  server.host: ${DB_SERVER_HOST:127.0.0.1}
-  server.port: ${DB_SERVER_PORT:5432}
+  pass: ${DB_PASS:password}
+  host: ${DB_HOST:127.0.0.1}
+  port: ${DB_PORT:5432}
 
 spring:
   datasource:
     #driver-class-name: org.postgresql.Driver
     name: ${db.name}
-    url: jdbc:postgresql://${db.server.host}:${db.server.port}/${db.name}
+    url: jdbc:postgresql://${db.host}:${db.port}/${db.name}
     username: ${db.user}
     password: ${db.pass}
 

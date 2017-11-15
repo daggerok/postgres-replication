@@ -3,10 +3,16 @@ plugins {
 }
 
 // fix windows paths, replace all "\\" with "/"
-def root = rootDir.absolutePath.replaceAll("\\\\", "/")
+def dir = project.projectDir.absolutePath.replaceAll("\\\\", "/")
+
+// gradle -Ddocker=all composeUp
+def identifier = System.getProperty("docker", "")
+def ext = identifier.isEmpty() ? ".yml" : "-${identifier}.yml"
+
+if (identifier) println "using docker $identifier environment"
 
 dockerCompose {
-  useComposeFiles = ["$project.projectDir/docker-compose.yml"]
+  useComposeFiles = ["$dir/docker-compose$ext"]
   captureContainersOutput = true
   stopContainers = true
   removeContainers = true

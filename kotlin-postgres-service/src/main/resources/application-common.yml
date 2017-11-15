@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: kotlin-postgres-service
+  output:
+    ansi:
+      enabled: always

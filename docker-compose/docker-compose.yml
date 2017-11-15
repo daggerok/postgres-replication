@@ -13,9 +13,8 @@ services:
       POSTGRES_PASSWORD: password
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "postgres"]
-      #interval: 10s
-      timeout: 10s
-      retries: 15
+      timeout: 1s
+      retries: 35
 
 volumes:
   postgres-data:
