@@ -20,8 +20,7 @@ before_install:
   - sudo usermod -aG docker $(whoami)
 
   # helper bash functions
-  - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/src/stop_any.bash)
-  - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/src/wait_for.bash)
+  - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/main.bash)
 
   # kill ports to be used
   - stop_any 27017 8080 5432
@@ -30,13 +29,13 @@ script:
   - bash gradlew clean build
 
   - docker system prune -af --volumes
-  - docker-compose -f docker-compose/docker-compose-all.yml up --force-recreate -d --build --remove-orphans
-  - docker-compose -f docker-compose/docker-compose-all.yml down -v
+  - docker-compose -f docker-compose/docker-compose-postgres-app.yml up --force-recreate -d --build --remove-orphans
+  - docker-compose -f docker-compose/docker-compose-postgres-app.yml down -v
 
   - docker system prune -af --volumes
-  - bash gradlew composeUp -Ddocker=all
+  - bash gradlew composeUp -Ddocker=postgres-app
   - http :8080/
-  - bash gradlew composeDown -Ddocker=all
+  - bash gradlew composeDown -Ddocker=postgres-app
 
   - docker system prune -af --volumes
   - bash gradlew bootRun &
