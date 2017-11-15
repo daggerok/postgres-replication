@@ -24,9 +24,7 @@ before_install:
   - source <(curl -s https://raw.githubusercontent.com/daggerok/bash-functions/master/src/wait_for.bash)
 
   # kill ports to be used
-  - lsof -i tcp:27017 | awk 'NR!=1 {print $2}' | xargs kill | true
-  - stop_any 5432
-  - stop_any 8080
+  - stop_any 27017 8080 5432
 
 script:
   - bash gradlew clean build
